@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<!--
+=============================================================
+  리오(강리오) 첫돌 초대장 — 사진 중심 풀스크린 스토리형
+=============================================================
+
+[남은 수정 위치]
+  OG 이미지 URL  : content="https://example.com/og-image.jpg" → 실제 사진 URL로
+  OG 페이지 URL  : content="https://kangwoojin.github.io/doljanchi/" → 배포 URL로
+  타임라인 캡션  : "처음으로 눈을 떴어요" 등 각 캡션 (보류 중)
+
+  [사진 자리표시자]
+  커버, 타임라인 4장, 갤러리 6장 → 실제 <img> 태그로 교체
+  각 위치에 data-placeholder 속성으로 표시
+=============================================================
+-->
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>리오의 첫돌잔치에 초대합니다</title>
+
+  <!-- OG 메타태그 (카카오톡 공유 미리보기) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="리오의 첫돌잔치에 초대합니다 🎂" />
+  <meta property="og:description" content="2026년 11월 1일 일요일 오전 11시 · 더파티 프리미엄 해운대점" />
+  <meta property="og:image" content="https://example.com/og-image.jpg" />
+  <meta property="og:url" content="https://kangwoojin.github.io/doljanchi/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#1a1a1a" />
+
+  <!-- Google Fonts: Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    /* =============================================
+       CSS 변수 & 리셋
+    ============================================= */
+    :root {
+      --accent: #E8A838;        /* 머스터드 포인트 */
+      --accent-light: #F5C96A;
+      --dark: #111111;
+      --dark-2: #1E1E1E;
+      --surface: #F8F6F2;
+      --surface-2: #EFECE6;
+      --text-primary: #1A1A1A;
+      --text-secondary: #5A5A5A;
+      --text-muted: #9A9A9A;
+      --white: #FFFFFF;
+      --overlay: rgba(0,0,0,0.48);
+      --overlay-deep: rgba(0,0,0,0.64);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --max-w: 430px;
+      --font: 'Noto Sans KR', 'Apple SD Gothic Neo', -apple-system, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      font-family: var(--font);
+      background: var(--dark);
+      color: var(--text-primary);
+      scroll-behavior: smooth;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      min-height: 100dvh;
+      overflow-x: hidden;
+    }
+
+    /* 컨텐츠 영역 중앙 정렬 */
+    .page-shell {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      background: var(--surface);
+    }
+
+    img { display: block; width: 100%; object-fit: cover; }
+
+    /* =============================================
+       스크롤 애니메이션 (IntersectionObserver)
+    ============================================= */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1),
+                  transform 0.7s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-28px);
+      transition: opacity 0.65s cubic-bezier(0.22,1,0.36,1),
+                  transform 0.65s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal-left.visible { opacity: 1; transform: none; }
+
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(28px);
+      transition: opacity 0.65s cubic-bezier(0.22,1,0.36,1),
+                  transform 0.65s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal-right.visible { opacity: 1; transform: none; }
+
+    /* =============================================
+       1. 풀스크린 커버
+    ============================================= */
+    #cover {
+      position: relative;
+      width: 100%;
+      height: 100dvh;
+      min-height: 640px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      /* 커버 사진 자리표시자 (실제 이미지로 교체 시 background 제거 후 <img> 삽입) */
+      background: linear-gradient(
+        135deg,
+        #2C1810 0%,
+        #4A2C1A 25%,
+        #6B3F2A 50%,
+        #3D2317 75%,
+        #1A0E09 100%
+      );
+      /* data-placeholder="cover-photo" */
+    }
+
+    /* 커버 사진 자리표시자 오버레이 텍스트 */
+    #cover::before {
+      content: "BABY PHOTO";
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.2);
+      pointer-events: none;
+    }
+
+    /* 다크 그라디언트 오버레이 */
+    .cover-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0.2) 0%,
+        rgba(0,0,0,0.45) 40%,
+        rgba(0,0,0,0.72) 100%
+      );
+    }
+
+    .cover-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 0 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    .cover-eyebrow {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.35em;
+      color: var(--accent-light);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeSlideDown 1s 0.4s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+
+    .cover-title-en {
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.25em;
+      color: rgba(255,255,255,0.65);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeSlideDown 1s 0.6s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+
+    .cover-name {
+      font-size: clamp(72px, 22vw, 96px);
+      font-weight: 900;
+      color: var(--white);
+      line-height: 0.9;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      opacity: 0;
+      animation: fadeSlideDown 1s 0.8s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+
+    .cover-name-sub {
+      font-size: 16px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.7);
+      letter-spacing: 0.4em;
+      margin-bottom: 40px;
+      opacity: 0;
+      animation: fadeSlideDown 1s 1s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+
+    .cover-date {
+      font-size: 15px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.9);
+      letter-spacing: 0.12em;
+      padding: 12px 28px;
+      border: 1px solid rgba(232,168,56,0.5);
+      border-radius: 40px;
+      background: rgba(232,168,56,0.12);
+      opacity: 0;
+      animation: fadeSlideDown 1s 1.2s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+
+    /* 스크롤 화살표 */
+    .scroll-hint {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      opacity: 0;
+      animation: fadeIn 1s 1.8s ease forwards;
+    }
+
+    .scroll-hint span {
+      font-size: 9px;
+      letter-spacing: 0.3em;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+    }
+
+    .scroll-arrow {
+      width: 24px;
+      height: 24px;
+      border-right: 2px solid rgba(255,255,255,0.5);
+      border-bottom: 2px solid rgba(255,255,255,0.5);
+      transform: rotate(45deg);
+      animation: bounceDown 1.6s ease-in-out infinite;
+    }
+
+    @keyframes fadeSlideDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+    @keyframes bounceDown {
+      0%, 100% { transform: rotate(45deg) translateY(0); }
+      50%       { transform: rotate(45deg) translateY(6px); }
+    }
+
+    /* =============================================
+       섹션 공통
+    ============================================= */
+    .section {
+      padding: 72px 28px;
+    }
+
+    .section-label {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.35em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+      margin-bottom: 20px;
+    }
+
+    .divider {
+      width: 40px;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 2px;
+      margin-bottom: 28px;
+    }
+
+    /* =============================================
+       2. 인사말
+    ============================================= */
+    #greeting {
+      background: var(--dark);
+      color: var(--white);
+      padding: 72px 32px;
+      text-align: center;
+    }
+
+    #greeting .section-label { color: var(--accent); }
+
+    .greeting-quote {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.5;
+      color: var(--white);
+      margin-bottom: 24px;
+      letter-spacing: -0.01em;
+    }
+
+    .greeting-quote em {
+      color: var(--accent-light);
+      font-style: normal;
+    }
+
+    .greeting-body {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 2;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 40px;
+    }
+
+    .parents-card {
+      display: inline-flex;
+      align-items: center;
+      gap: 20px;
+      padding: 20px 32px;
+      border: 1px solid rgba(232,168,56,0.3);
+      border-radius: var(--radius);
+      background: rgba(232,168,56,0.07);
+    }
+
+    .parents-divider {
+      width: 1px;
+      height: 32px;
+      background: rgba(232,168,56,0.3);
+    }
+
+    .parent-item {
+      text-align: center;
+    }
+
+    .parent-role {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .parent-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--white);
+    }
+
+    /* =============================================
+       3. 성장 타임라인
+    ============================================= */
+    #timeline {
+      background: var(--surface);
+      padding: 72px 0;
+    }
+
+    .timeline-header {
+      padding: 0 28px;
+      margin-bottom: 48px;
+    }
+
+    .timeline-track {
+      position: relative;
+    }
+
+    /* 중앙 세로선 */
+    .timeline-track::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, var(--accent) 10%, var(--accent) 90%, transparent);
+      transform: translateX(-50%);
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 1fr 28px 1fr;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 48px;
+      padding: 0 16px;
+    }
+
+    /* 중앙 도트 */
+    .timeline-dot {
+      width: 12px;
+      height: 12px;
+      background: var(--accent);
+      border-radius: 50%;
+      border: 2px solid var(--surface);
+      box-shadow: 0 0 0 3px rgba(232,168,56,0.25);
+      justify-self: center;
+      z-index: 1;
+    }
+
+    /* 사진 자리표시자 */
+    .timeline-photo {
+      aspect-ratio: 3/4;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .timeline-photo-inner {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.45);
+      text-align: center;
+    }
+
+    /* 홀수: 사진 왼쪽, 텍스트 오른쪽 */
+    .timeline-item:nth-child(odd) .timeline-photo { grid-column: 1; }
+    .timeline-item:nth-child(odd) .timeline-dot   { grid-column: 2; }
+    .timeline-item:nth-child(odd) .timeline-text  { grid-column: 3; padding-left: 14px; }
+
+    /* 짝수: 텍스트 왼쪽, 사진 오른쪽 */
+    .timeline-item:nth-child(even) .timeline-text  { grid-column: 1; padding-right: 14px; text-align: right; order: -1; }
+    .timeline-item:nth-child(even) .timeline-dot   { grid-column: 2; }
+    .timeline-item:nth-child(even) .timeline-photo { grid-column: 3; }
+
+    .timeline-text {}
+
+    .timeline-badge {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: var(--accent);
+      background: rgba(232,168,56,0.12);
+      border: 1px solid rgba(232,168,56,0.3);
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+    }
+
+    .timeline-caption {
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+
+    .timeline-caption strong {
+      display: block;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+
+    /* 사진 색상 (자리표시자) */
+    .ph-50  { background: linear-gradient(135deg, #C9A96E, #8B6914); }
+    .ph-100 { background: linear-gradient(135deg, #8BA888, #3D6B3A); }
+    .ph-200 { background: linear-gradient(135deg, #A8888B, #6B3D40); }
+    .ph-300 { background: linear-gradient(135deg, #8888A8, #3D3D6B); }
+
+    /* =============================================
+       4. D-day 카운트다운
+    ============================================= */
+    #dday {
+      background: var(--dark-2);
+      padding: 72px 28px;
+      text-align: center;
+    }
+
+    .dday-label {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.35em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .dday-grid {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      margin: 32px 0;
+    }
+
+    .dday-unit {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-sm);
+      padding: 16px 14px 12px;
+      min-width: 72px;
+      flex: 1;
+      max-width: 88px;
+    }
+
+    .dday-number {
+      font-size: 38px;
+      font-weight: 900;
+      color: var(--accent-light);
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .dday-unit-label {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.4);
+      text-transform: uppercase;
+      margin-top: 6px;
+    }
+
+    .dday-colon {
+      font-size: 28px;
+      font-weight: 900;
+      color: rgba(232,168,56,0.4);
+      align-self: center;
+      padding-bottom: 14px;
+    }
+
+    .dday-message {
+      font-size: 15px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.8;
+    }
+
+    .dday-message strong {
+      color: var(--white);
+      font-weight: 600;
+    }
+
+    /* =============================================
+       5. 일시·장소
+    ============================================= */
+    #info {
+      background: var(--surface);
+      padding: 72px 28px;
+    }
+
+    .info-block {
+      margin-bottom: 40px;
+    }
+
+    .info-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(232,168,56,0.12);
+      border: 1px solid rgba(232,168,56,0.25);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      margin-bottom: 16px;
+    }
+
+    .info-main {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+
+    .info-sub {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    .info-divider {
+      height: 1px;
+      background: var(--surface-2);
+      margin: 32px 0;
+    }
+
+    /* =============================================
+       6. 오시는 길
+    ============================================= */
+    #directions {
+      background: var(--surface-2);
+      padding: 56px 28px;
+    }
+
+    .map-placeholder {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(135deg, #D0CCB8, #B8B4A0);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .map-placeholder::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 32px),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 32px);
+    }
+
+    .map-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .map-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: opacity 0.18s, transform 0.18s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .map-btn:active { opacity: 0.8; transform: scale(0.97); }
+
+    .map-btn-kakao {
+      background: #FAE100;
+      color: #3C1E1E;
+    }
+
+    .map-btn-naver {
+      background: #03C75A;
+      color: #FFFFFF;
+    }
+
+    .map-btn-icon {
+      font-size: 16px;
+    }
+
+    /* =============================================
+       7. 갤러리 (라이트박스)
+    ============================================= */
+    #gallery {
+      background: var(--dark);
+      padding: 72px 20px;
+    }
+
+    #gallery .section-label { color: var(--accent); }
+    #gallery .section-title { color: var(--white); }
+    #gallery .divider { background: var(--accent); }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .gallery-item {
+      aspect-ratio: 1;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.2s;
+    }
+
+    .gallery-item:active { transform: scale(0.97); }
+
+    .gallery-photo {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.35);
+      position: relative;
+    }
+
+    .gallery-photo::after {
+      content: attr(data-num);
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: rgba(255,255,255,0.15);
+      font-weight: 900;
+    }
+
+    /* 갤러리 사진 자리표시자 색상 */
+    .gph-1 { background: linear-gradient(135deg, #3D2C1A, #6B4A25); }
+    .gph-2 { background: linear-gradient(135deg, #1A2C2A, #2A5A55); }
+    .gph-3 { background: linear-gradient(135deg, #2C1A2A, #5A2A5A); }
+    .gph-4 { background: linear-gradient(135deg, #2A2C1A, #4A5A25); }
+    .gph-5 { background: linear-gradient(135deg, #2C2A1A, #5A4A25); }
+    .gph-6 { background: linear-gradient(135deg, #1A2C2C, #25555A); }
+
+    .gallery-hover-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(232,168,56,0.0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .gallery-item:hover .gallery-hover-overlay,
+    .gallery-item:active .gallery-hover-overlay {
+      background: rgba(232,168,56,0.15);
+    }
+
+    /* 라이트박스 */
+    #lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,0.95);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    #lightbox.open { display: flex; }
+
+    .lightbox-inner {
+      position: relative;
+      width: 100%;
+      max-width: 380px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .lightbox-photo {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      color: rgba(255,255,255,0.35);
+      font-weight: 500;
+    }
+
+    .lightbox-close {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 44px;
+      height: 44px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 50%;
+      color: white;
+      font-size: 20px;
+      font-weight: 300;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    .lightbox-caption {
+      margin-top: 16px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.1em;
+      text-align: center;
+    }
+
+    .lightbox-nav {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 44px;
+      height: 44px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 50%;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #lb-prev { left: 12px; }
+    #lb-next { right: 12px; }
+
+    /* =============================================
+       10. 푸터
+    ============================================= */
+    footer {
+      background: var(--dark);
+      padding: 48px 28px 60px;
+      text-align: center;
+    }
+
+    .footer-name {
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--white);
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .footer-sub {
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.25em;
+      color: rgba(255,255,255,0.35);
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+
+    .footer-divider {
+      width: 40px;
+      height: 1px;
+      background: rgba(232,168,56,0.35);
+      margin: 0 auto 24px;
+    }
+
+    .footer-meta {
+      font-size: 11px;
+      color: rgba(255,255,255,0.25);
+      line-height: 1.9;
+    }
+  </style>
+</head>
+<body>
+
+<!-- =============================================
+     1. 풀스크린 커버
+============================================= -->
+<div id="cover" data-placeholder="cover-photo">
+  <div class="cover-overlay"></div>
+  <div class="cover-content">
+    <p class="cover-eyebrow">2026 · First Birthday</p>
+    <p class="cover-title-en">OUR BABY'S FIRST BIRTHDAY</p>
+    <h1 class="cover-name">리오</h1>
+    <p class="cover-name-sub">R I O</p>
+    <p class="cover-date">2026. 11. 01 SUN</p>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</div>
+
+<div class="page-shell">
+
+<!-- =============================================
+     2. 인사말
+============================================= -->
+<section id="greeting">
+  <div class="section-label reveal">INVITATION</div>
+  <p class="greeting-quote reveal">
+    우리의 작은 별이<br /><em>첫 번째 가을을 맞이합니다</em>
+  </p>
+  <p class="greeting-body reveal">
+    눈을 뜨면 세상이 신기해서<br />
+    손을 뻗으면 무엇이든 잡고 싶어서<br />
+    웃으면 저절로 따라 웃게 되는<br />
+    우리 리오가 어느새 첫돌을 맞았습니다.<br /><br />
+    소중한 분들과 함께<br />이 날을 기억하고 싶습니다.
+  </p>
+  <div class="parents-card reveal">
+    <div class="parent-item">
+      <p class="parent-role">아 빠</p>
+      <!-- 수정: 아빠 이름 -->
+      <p class="parent-name">강우진</p>
+    </div>
+    <div class="parents-divider"></div>
+    <div class="parent-item">
+      <p class="parent-role">엄 마</p>
+      <p class="parent-name">사카모토 사키코</p>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     3. 성장 타임라인
+============================================= -->
+<section id="timeline">
+  <div class="timeline-header">
+    <p class="section-label reveal">TIMELINE</p>
+    <h2 class="section-title reveal">태어나서<br />지금까지</h2>
+    <div class="divider reveal"></div>
+  </div>
+
+  <div class="timeline-track">
+
+    <!-- 50일 -->
+    <div class="timeline-item">
+      <div class="timeline-photo ph-50 reveal-left" data-placeholder="50일 사진">
+        <div class="timeline-photo-inner">PHOTO</div>
+      </div>
+      <div class="timeline-dot"></div>
+      <div class="timeline-text reveal-right">
+        <span class="timeline-badge">50 DAYS</span>
+        <div class="timeline-caption">
+          <strong>처음으로 눈을 떴어요</strong>
+          <!-- 수정: 캡션 내용 -->
+          세상 모든 것이 신기한<br />우리 리오의 50일
+        </div>
+      </div>
+    </div>
+
+    <!-- 100일 -->
+    <div class="timeline-item">
+      <div class="timeline-text reveal-left">
+        <span class="timeline-badge">100 DAYS</span>
+        <div class="timeline-caption">
+          <strong>백일의 기적</strong>
+          <!-- 수정: 캡션 내용 -->
+          방실방실 웃음꽃이<br />피어나기 시작했어요
+        </div>
+      </div>
+      <div class="timeline-dot"></div>
+      <div class="timeline-photo ph-100 reveal-right" data-placeholder="100일 사진">
+        <div class="timeline-photo-inner">PHOTO</div>
+      </div>
+    </div>
+
+    <!-- 200일 -->
+    <div class="timeline-item">
+      <div class="timeline-photo ph-200 reveal-left" data-placeholder="200일 사진">
+        <div class="timeline-photo-inner">PHOTO</div>
+      </div>
+      <div class="timeline-dot"></div>
+      <div class="timeline-text reveal-right">
+        <span class="timeline-badge">200 DAYS</span>
+        <div class="timeline-caption">
+          <strong>뒤집기 성공!</strong>
+          <!-- 수정: 캡션 내용 -->
+          혼자서 뒤집기에 성공하고<br />세상을 향해 전진 중
+        </div>
+      </div>
+    </div>
+
+    <!-- 첫돌 -->
+    <div class="timeline-item">
+      <div class="timeline-text reveal-left">
+        <span class="timeline-badge">365 DAYS</span>
+        <div class="timeline-caption">
+          <strong>드디어 첫돌 🎂</strong>
+          <!-- 수정: 캡션 내용 -->
+          걷고, 웃고, 떠들며<br />어엿한 한 살이 되었어요
+        </div>
+      </div>
+      <div class="timeline-dot"></div>
+      <div class="timeline-photo ph-300 reveal-right" data-placeholder="첫돌 사진">
+        <div class="timeline-photo-inner">PHOTO</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- =============================================
+     4. D-day 카운트다운
+============================================= -->
+<section id="dday">
+  <p class="dday-label reveal">COUNTDOWN</p>
+  <div class="reveal">
+    <div class="dday-grid" id="dday-grid">
+      <div class="dday-unit">
+        <div class="dday-number" id="dd-days">--</div>
+        <div class="dday-unit-label">Days</div>
+      </div>
+      <div class="dday-colon">:</div>
+      <div class="dday-unit">
+        <div class="dday-number" id="dd-hours">--</div>
+        <div class="dday-unit-label">Hours</div>
+      </div>
+      <div class="dday-colon">:</div>
+      <div class="dday-unit">
+        <div class="dday-number" id="dd-mins">--</div>
+        <div class="dday-unit-label">Mins</div>
+      </div>
+      <div class="dday-colon">:</div>
+      <div class="dday-unit">
+        <div class="dday-number" id="dd-secs">--</div>
+        <div class="dday-unit-label">Secs</div>
+      </div>
+    </div>
+  </div>
+  <p class="dday-message reveal">
+    리오의 첫돌잔치까지<br />
+    <strong>2026년 11월 1일</strong>을 기다리고 있어요
+  </p>
+</section>
+
+<!-- =============================================
+     5. 일시·장소
+============================================= -->
+<section id="info" class="section">
+  <p class="section-label reveal">DETAILS</p>
+  <h2 class="section-title reveal">행사 안내</h2>
+  <div class="divider reveal"></div>
+
+  <div class="info-block reveal">
+    <div class="info-icon">📅</div>
+    <p class="info-main">
+      2026년 11월 1일<br />일요일 오전 11시
+    </p>
+    <p class="info-sub">
+      돌잔치는 오전 11시에 시작됩니다
+    </p>
+  </div>
+
+  <div class="info-divider"></div>
+
+  <div class="info-block reveal">
+    <div class="info-icon">📍</div>
+    <p class="info-main">더파티 프리미엄<br />해운대점</p>
+    <p class="info-sub">
+      부산 해운대구 해운대해변로298번길 24<br />
+      팔레드시즈 지하 1층
+    </p>
+  </div>
+</section>
+
+<!-- =============================================
+     6. 오시는 길
+============================================= -->
+<section id="directions">
+  <p class="section-label reveal">DIRECTIONS</p>
+  <h2 class="section-title reveal">오시는 길</h2>
+  <div class="divider reveal"></div>
+
+  <div class="map-placeholder reveal">
+    MAP PLACEHOLDER
+  </div>
+
+  <div class="map-buttons reveal">
+    <a href="https://map.kakao.com/link/search/%EB%8D%94%ED%8C%8C%ED%8B%B0%20%ED%94%84%EB%A6%AC%EB%AF%B8%EC%97%84%20%ED%95%B4%EC%9A%B4%EB%8C%80%EC%A0%90" class="map-btn map-btn-kakao" target="_blank" rel="noopener">
+      <span class="map-btn-icon">🗺</span>
+      카카오맵
+    </a>
+    <a href="https://naver.me/5A3pObfu" class="map-btn map-btn-naver" target="_blank" rel="noopener">
+      <span class="map-btn-icon">🗺</span>
+      네이버지도
+    </a>
+  </div>
+</section>
+
+<!-- =============================================
+     7. 갤러리
+============================================= -->
+<section id="gallery">
+  <p class="section-label reveal">GALLERY</p>
+  <h2 class="section-title reveal">우리 리오</h2>
+  <div class="divider reveal"></div>
+
+  <div class="gallery-grid reveal">
+    <!-- 수정: 실제 이미지로 교체 시 .gallery-photo div 대신 <img> 사용 -->
+    <div class="gallery-item" data-index="0" data-placeholder="갤러리 사진 1">
+      <div class="gallery-photo gph-1" data-num="1">
+        <div class="gallery-hover-overlay"></div>
+      </div>
+    </div>
+    <div class="gallery-item" data-index="1" data-placeholder="갤러리 사진 2">
+      <div class="gallery-photo gph-2" data-num="2">
+        <div class="gallery-hover-overlay"></div>
+      </div>
+    </div>
+    <div class="gallery-item" data-index="2" data-placeholder="갤러리 사진 3">
+      <div class="gallery-photo gph-3" data-num="3">
+        <div class="gallery-hover-overlay"></div>
+      </div>
+    </div>
+    <div class="gallery-item" data-index="3" data-placeholder="갤러리 사진 4">
+      <div class="gallery-photo gph-4" data-num="4">
+        <div class="gallery-hover-overlay"></div>
+      </div>
+    </div>
+    <div class="gallery-item" data-index="4" data-placeholder="갤러리 사진 5">
+      <div class="gallery-photo gph-5" data-num="5">
+        <div class="gallery-hover-overlay"></div>
+      </div>
+    </div>
+    <div class="gallery-item" data-index="5" data-placeholder="갤러리 사진 6">
+      <div class="gallery-photo gph-6" data-num="6">
+        <div class="gallery-hover-overlay"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 라이트박스 -->
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="사진 확대">
+  <div class="lightbox-inner">
+    <div class="lightbox-photo" id="lb-photo"></div>
+    <p class="lightbox-caption" id="lb-caption"></p>
+  </div>
+  <button class="lightbox-nav" id="lb-prev" aria-label="이전 사진">‹</button>
+  <button class="lightbox-nav" id="lb-next" aria-label="다음 사진">›</button>
+  <button class="lightbox-close" id="lb-close" aria-label="닫기">✕</button>
+</div>
+
+<!-- =============================================
+     10. 푸터
+============================================= -->
+<footer>
+  <p class="footer-name reveal">리오</p>
+  <p class="footer-sub reveal">2026 · First Birthday</p>
+  <div class="footer-divider reveal"></div>
+  <p class="footer-meta reveal">
+    2026년 11월 1일 일요일<br />
+    더파티 프리미엄 해운대점<br />
+    아빠 강우진 · 엄마 사카모토 사키코
+  </p>
+</footer>
+
+</div><!-- /page-shell -->
+
+
+<script>
+  /* =============================================
+     D-day 카운트다운
+  ============================================= */
+  // 수정: 목표 일시 (ISO 8601)
+  const TARGET = new Date('2026-11-01T11:00:00+09:00');
+
+  function updateCountdown() {
+    const now = new Date();
+    const diff = TARGET - now;
+
+    if (diff <= 0) {
+      document.getElementById('dd-days').textContent = '00';
+      document.getElementById('dd-hours').textContent = '00';
+      document.getElementById('dd-mins').textContent = '00';
+      document.getElementById('dd-secs').textContent = '00';
+      return;
+    }
+
+    const days  = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const mins  = Math.floor((diff % 3600000) / 60000);
+    const secs  = Math.floor((diff % 60000) / 1000);
+
+    const pad = n => String(n).padStart(2, '0');
+    document.getElementById('dd-days').textContent  = pad(days);
+    document.getElementById('dd-hours').textContent = pad(hours);
+    document.getElementById('dd-mins').textContent  = pad(mins);
+    document.getElementById('dd-secs').textContent  = pad(secs);
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  /* =============================================
+     IntersectionObserver — 스크롤 페이드인
+  ============================================= */
+  const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+  );
+
+  revealEls.forEach(el => observer.observe(el));
+
+  /* =============================================
+     갤러리 라이트박스
+  ============================================= */
+  // 사진 색상 (자리표시자) — 실제 이미지 교체 시 이 배열 대신 <img src> 사용
+  const galleryColors = ['#3D2C1A','#1A2C2A','#2C1A2A','#2A2C1A','#2C2A1A','#1A2C2C'];
+  const galleryLabels = ['사진 1','사진 2','사진 3','사진 4','사진 5','사진 6'];
+
+  const lightbox = document.getElementById('lightbox');
+  const lbPhoto  = document.getElementById('lb-photo');
+  const lbCap    = document.getElementById('lb-caption');
+  let currentIdx = 0;
+
+  function openLightbox(idx) {
+    currentIdx = idx;
+    renderLightbox();
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function renderLightbox() {
+    lbPhoto.style.background = `linear-gradient(135deg, ${galleryColors[currentIdx]}, #000)`;
+    lbPhoto.textContent = '';  // 실제 이미지 교체 시 innerHTML = `<img src="...">`
+    lbCap.textContent = `리오 ${galleryLabels[currentIdx]}`;
+  }
+
+  document.querySelectorAll('.gallery-item').forEach(item => {
+    item.addEventListener('click', () => {
+      openLightbox(parseInt(item.dataset.index));
+    });
+  });
+
+  document.getElementById('lb-close').addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+
+  document.getElementById('lb-prev').addEventListener('click', (e) => {
+    e.stopPropagation();
+    currentIdx = (currentIdx - 1 + galleryColors.length) % galleryColors.length;
+    renderLightbox();
+  });
+
+  document.getElementById('lb-next').addEventListener('click', (e) => {
+    e.stopPropagation();
+    currentIdx = (currentIdx + 1) % galleryColors.length;
+    renderLightbox();
+  });
+
+  // 스와이프 지원
+  let touchStartX = 0;
+  lightbox.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].clientX;
+  }, { passive: true });
+  lightbox.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 48) {
+      if (dx < 0) {
+        currentIdx = (currentIdx + 1) % galleryColors.length;
+      } else {
+        currentIdx = (currentIdx - 1 + galleryColors.length) % galleryColors.length;
+      }
+      renderLightbox();
+    }
+  }, { passive: true });
+
+  // 키보드 내비게이션
+  document.addEventListener('keydown', e => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') {
+      currentIdx = (currentIdx - 1 + galleryColors.length) % galleryColors.length;
+      renderLightbox();
+    }
+    if (e.key === 'ArrowRight') {
+      currentIdx = (currentIdx + 1) % galleryColors.length;
+      renderLightbox();
+    }
+  });
+</script>
+</body>
+</html>
