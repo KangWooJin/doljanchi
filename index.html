@@ -5,13 +5,11 @@
 =============================================================
 
 [남은 수정 위치]
-  OG 이미지 URL  : content="https://example.com/og-image.jpg" → 실제 사진 URL로
-  OG 페이지 URL  : content="https://kangwoojin.github.io/doljanchi/" → 배포 URL로
   타임라인 캡션  : "처음으로 눈을 떴어요" 등 각 캡션 (보류 중)
+  사진 경로      : photos/day50·100·200·365.jpg, photos/gallery1~6.jpg (커버=day365)
 
   [사진 자리표시자]
   커버, 타임라인 4장, 갤러리 6장 → 실제 <img> 태그로 교체
-  각 위치에 data-placeholder 속성으로 표시
 =============================================================
 -->
 <html lang="ko">
@@ -24,7 +22,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:title" content="리오의 첫돌잔치에 초대합니다 🎂" />
   <meta property="og:description" content="2026년 11월 1일 일요일 오전 11시 · 더파티 프리미엄 해운대점" />
-  <meta property="og:image" content="https://example.com/og-image.jpg" />
+  <meta property="og:image" content="https://kangwoojin.github.io/doljanchi/photos/day365.jpg" />
   <meta property="og:url" content="https://kangwoojin.github.io/doljanchi/" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="theme-color" content="#1a1a1a" />
@@ -124,31 +122,7 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      /* 커버 사진 자리표시자 (실제 이미지로 교체 시 background 제거 후 <img> 삽입) */
-      background: linear-gradient(
-        135deg,
-        #2C1810 0%,
-        #4A2C1A 25%,
-        #6B3F2A 50%,
-        #3D2317 75%,
-        #1A0E09 100%
-      );
-      /* data-placeholder="cover-photo" */
-    }
-
-    /* 커버 사진 자리표시자 오버레이 텍스트 */
-    #cover::before {
-      content: "BABY PHOTO";
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: 0.2em;
-      color: rgba(255,255,255,0.2);
-      pointer-events: none;
+      background: url('photos/day365.jpg') center 22% / cover no-repeat #1A0E09;
     }
 
     /* 다크 그라디언트 오버레이 */
@@ -432,17 +406,11 @@
       position: relative;
     }
 
-    .timeline-photo-inner {
+    .timeline-photo img {
       width: 100%;
       height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      color: rgba(255,255,255,0.45);
-      text-align: center;
+      object-fit: cover;
+      display: block;
     }
 
     /* 홀수: 사진 왼쪽, 텍스트 오른쪽 */
@@ -617,30 +585,19 @@
       padding: 56px 28px;
     }
 
-    .map-placeholder {
+    .map-preview {
+      display: block;
       width: 100%;
-      height: 200px;
-      background: linear-gradient(135deg, #D0CCB8, #B8B4A0);
       border-radius: var(--radius);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.15em;
-      color: rgba(255,255,255,0.6);
       margin-bottom: 20px;
-      position: relative;
       overflow: hidden;
     }
 
-    .map-placeholder::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 32px),
-        repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 32px);
+    .map-preview img {
+      width: 100%;
+      aspect-ratio: 16 / 11;
+      object-fit: cover;
+      display: block;
     }
 
     .map-buttons {
@@ -709,38 +666,12 @@
 
     .gallery-item:active { transform: scale(0.97); }
 
-    .gallery-photo {
+    .gallery-item img {
       width: 100%;
       height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 9px;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      color: rgba(255,255,255,0.35);
-      position: relative;
+      object-fit: cover;
+      display: block;
     }
-
-    .gallery-photo::after {
-      content: attr(data-num);
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      color: rgba(255,255,255,0.15);
-      font-weight: 900;
-    }
-
-    /* 갤러리 사진 자리표시자 색상 */
-    .gph-1 { background: linear-gradient(135deg, #3D2C1A, #6B4A25); }
-    .gph-2 { background: linear-gradient(135deg, #1A2C2A, #2A5A55); }
-    .gph-3 { background: linear-gradient(135deg, #2C1A2A, #5A2A5A); }
-    .gph-4 { background: linear-gradient(135deg, #2A2C1A, #4A5A25); }
-    .gph-5 { background: linear-gradient(135deg, #2C2A1A, #5A4A25); }
-    .gph-6 { background: linear-gradient(135deg, #1A2C2C, #25555A); }
 
     .gallery-hover-overlay {
       position: absolute;
@@ -885,7 +816,7 @@
 <!-- =============================================
      1. 풀스크린 커버
 ============================================= -->
-<div id="cover" data-placeholder="cover-photo">
+<div id="cover">
   <div class="cover-overlay"></div>
   <div class="cover-content">
     <p class="cover-eyebrow">2026 · First Birthday</p>
@@ -945,8 +876,8 @@
 
     <!-- 50일 -->
     <div class="timeline-item">
-      <div class="timeline-photo ph-50 reveal-left" data-placeholder="50일 사진">
-        <div class="timeline-photo-inner">PHOTO</div>
+      <div class="timeline-photo ph-50 reveal-left">
+        <img src="photos/day50.jpg" alt="리오 50일 사진" loading="lazy" />
       </div>
       <div class="timeline-dot"></div>
       <div class="timeline-text reveal-right">
@@ -970,15 +901,15 @@
         </div>
       </div>
       <div class="timeline-dot"></div>
-      <div class="timeline-photo ph-100 reveal-right" data-placeholder="100일 사진">
-        <div class="timeline-photo-inner">PHOTO</div>
+      <div class="timeline-photo ph-100 reveal-right">
+        <img src="photos/day100.jpg" alt="리오 100일 사진" loading="lazy" />
       </div>
     </div>
 
     <!-- 200일 -->
     <div class="timeline-item">
-      <div class="timeline-photo ph-200 reveal-left" data-placeholder="200일 사진">
-        <div class="timeline-photo-inner">PHOTO</div>
+      <div class="timeline-photo ph-200 reveal-left">
+        <img src="photos/day200.jpg" alt="리오 200일 사진" loading="lazy" />
       </div>
       <div class="timeline-dot"></div>
       <div class="timeline-text reveal-right">
@@ -1002,8 +933,8 @@
         </div>
       </div>
       <div class="timeline-dot"></div>
-      <div class="timeline-photo ph-300 reveal-right" data-placeholder="첫돌 사진">
-        <div class="timeline-photo-inner">PHOTO</div>
+      <div class="timeline-photo ph-300 reveal-right">
+        <img src="photos/day365.jpg" alt="리오 첫돌 사진" loading="lazy" />
       </div>
     </div>
 
@@ -1082,9 +1013,9 @@
   <h2 class="section-title reveal">오시는 길</h2>
   <div class="divider reveal"></div>
 
-  <div class="map-placeholder reveal">
-    MAP PLACEHOLDER
-  </div>
+  <a href="https://naver.me/5A3pObfu" class="map-preview reveal" target="_blank" rel="noopener" aria-label="네이버지도에서 위치 보기">
+    <img src="photos/map.jpg" alt="더파티 프리미엄 해운대점 지도" loading="lazy" />
+  </a>
 
   <div class="map-buttons reveal">
     <a href="https://map.kakao.com/link/search/%EB%8D%94%ED%8C%8C%ED%8B%B0%20%ED%94%84%EB%A6%AC%EB%AF%B8%EC%97%84%20%ED%95%B4%EC%9A%B4%EB%8C%80%EC%A0%90" class="map-btn map-btn-kakao" target="_blank" rel="noopener">
@@ -1107,36 +1038,29 @@
   <div class="divider reveal"></div>
 
   <div class="gallery-grid reveal">
-    <!-- 수정: 실제 이미지로 교체 시 .gallery-photo div 대신 <img> 사용 -->
-    <div class="gallery-item" data-index="0" data-placeholder="갤러리 사진 1">
-      <div class="gallery-photo gph-1" data-num="1">
-        <div class="gallery-hover-overlay"></div>
-      </div>
+    <div class="gallery-item" data-index="0">
+      <img src="photos/gallery1.jpg" alt="갤러리 사진 1" loading="lazy" />
+      <div class="gallery-hover-overlay"></div>
     </div>
-    <div class="gallery-item" data-index="1" data-placeholder="갤러리 사진 2">
-      <div class="gallery-photo gph-2" data-num="2">
-        <div class="gallery-hover-overlay"></div>
-      </div>
+    <div class="gallery-item" data-index="1">
+      <img src="photos/gallery2.jpg" alt="갤러리 사진 2" loading="lazy" />
+      <div class="gallery-hover-overlay"></div>
     </div>
-    <div class="gallery-item" data-index="2" data-placeholder="갤러리 사진 3">
-      <div class="gallery-photo gph-3" data-num="3">
-        <div class="gallery-hover-overlay"></div>
-      </div>
+    <div class="gallery-item" data-index="2">
+      <img src="photos/gallery3.jpg" alt="갤러리 사진 3" loading="lazy" />
+      <div class="gallery-hover-overlay"></div>
     </div>
-    <div class="gallery-item" data-index="3" data-placeholder="갤러리 사진 4">
-      <div class="gallery-photo gph-4" data-num="4">
-        <div class="gallery-hover-overlay"></div>
-      </div>
+    <div class="gallery-item" data-index="3">
+      <img src="photos/gallery4.jpg" alt="갤러리 사진 4" loading="lazy" />
+      <div class="gallery-hover-overlay"></div>
     </div>
-    <div class="gallery-item" data-index="4" data-placeholder="갤러리 사진 5">
-      <div class="gallery-photo gph-5" data-num="5">
-        <div class="gallery-hover-overlay"></div>
-      </div>
+    <div class="gallery-item" data-index="4">
+      <img src="photos/gallery5.jpg" alt="갤러리 사진 5" loading="lazy" />
+      <div class="gallery-hover-overlay"></div>
     </div>
-    <div class="gallery-item" data-index="5" data-placeholder="갤러리 사진 6">
-      <div class="gallery-photo gph-6" data-num="6">
-        <div class="gallery-hover-overlay"></div>
-      </div>
+    <div class="gallery-item" data-index="5">
+      <img src="photos/gallery6.jpg" alt="갤러리 사진 6" loading="lazy" />
+      <div class="gallery-hover-overlay"></div>
     </div>
   </div>
 </section>
@@ -1225,8 +1149,7 @@
   /* =============================================
      갤러리 라이트박스
   ============================================= */
-  // 사진 색상 (자리표시자) — 실제 이미지 교체 시 이 배열 대신 <img src> 사용
-  const galleryColors = ['#3D2C1A','#1A2C2A','#2C1A2A','#2A2C1A','#2C2A1A','#1A2C2C'];
+  const galleryImages = ['photos/gallery1.jpg','photos/gallery2.jpg','photos/gallery3.jpg','photos/gallery4.jpg','photos/gallery5.jpg','photos/gallery6.jpg'];
   const galleryLabels = ['사진 1','사진 2','사진 3','사진 4','사진 5','사진 6'];
 
   const lightbox = document.getElementById('lightbox');
@@ -1247,8 +1170,7 @@
   }
 
   function renderLightbox() {
-    lbPhoto.style.background = `linear-gradient(135deg, ${galleryColors[currentIdx]}, #000)`;
-    lbPhoto.textContent = '';  // 실제 이미지 교체 시 innerHTML = `<img src="...">`
+    lbPhoto.innerHTML = `<img src="${galleryImages[currentIdx]}" alt="리오 ${galleryLabels[currentIdx]}" style="width:100%;height:100%;object-fit:contain;" />`;
     lbCap.textContent = `리오 ${galleryLabels[currentIdx]}`;
   }
 
@@ -1263,13 +1185,13 @@
 
   document.getElementById('lb-prev').addEventListener('click', (e) => {
     e.stopPropagation();
-    currentIdx = (currentIdx - 1 + galleryColors.length) % galleryColors.length;
+    currentIdx = (currentIdx - 1 + galleryImages.length) % galleryImages.length;
     renderLightbox();
   });
 
   document.getElementById('lb-next').addEventListener('click', (e) => {
     e.stopPropagation();
-    currentIdx = (currentIdx + 1) % galleryColors.length;
+    currentIdx = (currentIdx + 1) % galleryImages.length;
     renderLightbox();
   });
 
@@ -1282,9 +1204,9 @@
     const dx = e.changedTouches[0].clientX - touchStartX;
     if (Math.abs(dx) > 48) {
       if (dx < 0) {
-        currentIdx = (currentIdx + 1) % galleryColors.length;
+        currentIdx = (currentIdx + 1) % galleryImages.length;
       } else {
-        currentIdx = (currentIdx - 1 + galleryColors.length) % galleryColors.length;
+        currentIdx = (currentIdx - 1 + galleryImages.length) % galleryImages.length;
       }
       renderLightbox();
     }
@@ -1295,11 +1217,11 @@
     if (!lightbox.classList.contains('open')) return;
     if (e.key === 'Escape') closeLightbox();
     if (e.key === 'ArrowLeft') {
-      currentIdx = (currentIdx - 1 + galleryColors.length) % galleryColors.length;
+      currentIdx = (currentIdx - 1 + galleryImages.length) % galleryImages.length;
       renderLightbox();
     }
     if (e.key === 'ArrowRight') {
-      currentIdx = (currentIdx + 1) % galleryColors.length;
+      currentIdx = (currentIdx + 1) % galleryImages.length;
       renderLightbox();
     }
   });
